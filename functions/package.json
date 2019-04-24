@@ -1,5 +1,5 @@
 {
-  "name": "functions",
+  "name": "spiral",
   "description": "Cloud Functions for Firebase",
   "scripts": {
     "lint": "./node_modules/.bin/eslint --max-warnings=0 .",
