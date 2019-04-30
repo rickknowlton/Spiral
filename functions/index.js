@@ -79,7 +79,7 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
     method: 'POST',
     json: true,
     body: { 
-        attachments: snap.val()
+        text: snap.val()
     },
     resolveWithFullResponse: true,
   });
