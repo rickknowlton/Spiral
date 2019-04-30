@@ -5,6 +5,18 @@ const functions = require('firebase-functions');
 const rp = require('request-promise');
 const crypto = require('crypto');
 const secureCompare = require('secure-compare');
+const nodemailer = require('nodemailer');
+
+
+const gmailEmail = functions.config().gmail.email;
+const gmailPassword = functions.config().gmail.password;
+const mailTransport = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: gmailEmail,
+    pass: gmailPassword,
+  },
+});
 
 
 /**
