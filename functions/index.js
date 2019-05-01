@@ -5,19 +5,6 @@ const functions = require('firebase-functions');
 const rp = require('request-promise');
 const crypto = require('crypto');
 const secureCompare = require('secure-compare');
-const nodemailer = require('nodemailer');
-
-
-const gmailEmail = functions.config().gmail.email;
-const gmailPassword = functions.config().gmail.password;
-const mailTransport = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: gmailEmail,
-    pass: gmailPassword,
-  },
-});
-
 
 /**
  * Webhook that will be called each time there is a new GitHub commit and will post a message to
@@ -79,7 +66,7 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
     method: 'POST',
     json: true,
     body: { 
-        text: snap.val()
+        text: "🔥 Comin' in hot! You've got a new message from the contact form!" + JSON.stringify(snap.val())
     },
     resolveWithFullResponse: true,
   });
