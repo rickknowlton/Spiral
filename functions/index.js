@@ -5,6 +5,9 @@ const functions = require('firebase-functions');
 const rp = require('request-promise');
 const crypto = require('crypto');
 const secureCompare = require('secure-compare');
+// const cors = require('cors');
+// const nodemailer = require('nodemailer');
+
 
 /**
  * Webhook that will be called each time there is a new GitHub commit and will post a message to
@@ -61,6 +64,7 @@ const WEBHOOK_URL = 'https://hooks.slack.com/services/TJ38WECN9/BJ8P5RB9C/qTGJq0
 // Reads the content of the node that triggered the function and sends it to the registered Webhook
 // URL.
 exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap) => {
+  console.log(snap.ref.company)
   const response = await rp({
     uri: WEBHOOK_URL,
     method: 'POST',
