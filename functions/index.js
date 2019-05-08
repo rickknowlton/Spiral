@@ -5,8 +5,19 @@ const functions = require('firebase-functions');
 const rp = require('request-promise');
 const crypto = require('crypto');
 const secureCompare = require('secure-compare');
-// const cors = require('cors');
-// const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
+const cors = require('cors')({ origin: true });
+const fs = require("fs");
+const path = require('path');
+const gmailEmail = functions.config().gmail.email;
+const gmailPassword = functions.config().gmail.password;
+const mailTransport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: gmailEmail,
+        pass: gmailPassword
+    }
+});
 
 
 /**
@@ -64,14 +75,18 @@ const WEBHOOK_URL = 'https://hooks.slack.com/services/TJ38WECN9/BJ8P5RB9C/qTGJq0
 // Reads the content of the node that triggered the function and sends it to the registered Webhook
 // URL.
 exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap) => {
-  console.log(snap.ref.company)
+  const payload = snap.val()
+  console.log(payload.name);
   const response = await rp({
     uri: WEBHOOK_URL,
     method: 'POST',
     json: true,
     body: { 
-        text: "🔥 Comin' in hot! You've got a new message from the contact form!" + JSON.stringify(snap.val())
-    },
+      "title": "Contact Form Alert 📧",
+        text: "🔥 Comin' in hot! You've got a new message from the contact form! " + "*" + payload.name + "*" + " wants to link up! This is what they have to say: \n" + payload.message + "\n\n If you want to follow up you can reach em here " + payload.email + " or give them a ring at " + payload.phone,
+    "mrkdwn": true
+
+      },
     resolveWithFullResponse: true,
   });
   if (response.statusCode >= 400) {
@@ -79,6 +94,83 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
   }
   console.log('SUCCESS! Posted', snap.ref);
 });
+
+
+// JSON.stringify(snap.val())
+// Mailer
+
+
+exports.mailFxn = functions.database
+  .ref("/hooks/{hookId}")
+  .onCreate((snapshot, context) => {
+    // Grab the current value of what was written to the Realtime Database.
+    const makers = snapshot.val();
+    console.log(makers.name);
+    console.log(makers.email);
+
+    const makerID = context.params.id;
+
+
+
+    //firebase functions:config:set gmail.email=myemailID@gmail.com gmail.password=Mypassword
+    //To set email and password
+
+    //To view the set email and pass firebase functions:config:get
+
+    sendEmail(makers, makerID);
+
+    return null;
+  });
+
+function sendEmail(makers, makerID) {
+
+  //http://www.google.com/accounts/DisplayUnlockCaptcha
+  //https://myaccount.google.com/lesssecureapps
+  //This link is important to enable accesses to google account
+
+  var UNIQUE_NAME = makers.name;
+  // var UNIQUE_ID = makerID;
+
+  var UNIQUE_QR = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${+makerID + 1000}`
+
+
+  var filePath = path.join(__dirname, 'templates/makerEmail.html');
+
+  fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
+    data = data.toString();
+    data = data.replace(/##UNIQUE_NAME/g, UNIQUE_NAME);
+    // data = data.replace(/##UNIQUE_ID/g, UNIQUE_ID);
+    data = data.replace(/##UNIQUE_QR/g, UNIQUE_QR);
+
+
+    var mailOptions = {
+      from: '"MakerEvent" <noreply@firebase.com>', // sender address 
+      to: makers.email, // list of receivers 
+      subject: 'Thank You For Registration', // Subject line 
+      html: data // html body
+    };
+
+
+
+    try {
+      mailTransport.sendMail(mailOptions);
+    } catch (error) {
+      console.error('There was an error while sending the email:', error);
+
+      // errorEmails = functions.database.ref(`/emailError/${makerID}`).set({
+      //   email: makers.email
+      // })
+
+    }
+
+
+    return console.log(
+      `Sending mail to ${makers.name} with stamp ${makers.stamp}`
+    );
+  });
+}
+
+//To deploy firebase deploy --only functions:mailFxn
 
 // v 1.2.2
 // Slack is delivering text payload only - when I put snap.val() under body>text> it comes in as blank array
