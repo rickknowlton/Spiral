@@ -1,3 +1,6 @@
 # Spiral
 
-v 1.2.2
+v 2.0.3
+
+-- Email Confirmation
+-- Slack Alert for Contact Form submission and Github commits
