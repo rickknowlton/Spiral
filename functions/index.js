@@ -87,7 +87,6 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
             "fallback": "Contact Form Alert 📧",
             "color": "#10E7E0",			
             "title": "📧 Message from " + payload.name,
-            "pretext": "*" + payload.name + "*" + " wants to link up!",
             "text": payload.message + "\n\n Email: " + payload.email + "\nPhone: " + payload.phone,
             "mrkdwn_in": [
                 "text",
