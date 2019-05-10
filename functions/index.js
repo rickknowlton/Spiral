@@ -81,13 +81,22 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
     uri: WEBHOOK_URL,
     method: 'POST',
     json: true,
-    body: { 
-      "title": "Contact Form Alert 📧",
-        text: "🔥 Comin' in hot! You've got a new message from the contact form! " + "*" + payload.name + "*" + " wants to link up! This is what they have to say: \n" + payload.message + "\n\n If you want to follow up you can reach em here " + payload.email + " or give them a ring at " + payload.phone,
-    "mrkdwn": true
-
-      },
-    resolveWithFullResponse: true,
+    body: {	"text": "🔥 Comin' in hot! You've got a new message from the contact form!",
+    "attachments": [
+        {
+            "fallback": "Contact Form Alert 📧",
+            "color": "#10E7E0",			
+            "title": "📧 Message from " + payload.name,
+            "pretext": "*" + payload.name + "*" + " wants to link up!",
+            "text": payload.message + "\n\n Email: " + payload.email + "\nPhone: " + payload.phone,
+            "mrkdwn_in": [
+                "text",
+                "pretext"
+            ]
+        }
+    ]
+        },
+  resolveWithFullResponse: true,
   });
   if (response.statusCode >= 400) {
     throw new Error(`HTTP Error: ${response.statusCode}`);
