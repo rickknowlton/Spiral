@@ -142,19 +142,17 @@ function sendEmail(makers, makerID) {
   var UNIQUE_QR = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${+makerID + 1000}`
 
 
-  var filePath = path.join(__dirname, 'templates/makerEmail.html');
+  var filePath = path.join(__dirname, 'templates/confirmation.html');
 
   fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
     data = data.toString();
     data = data.replace(/##UNIQUE_NAME/g, UNIQUE_NAME);
-    // data = data.replace(/##UNIQUE_ID/g, UNIQUE_ID);
-    data = data.replace(/##UNIQUE_QR/g, UNIQUE_QR);
 
 
     var mailOptions = {
-      from: '"MakerEvent" <noreply@firebase.com>', // sender address 
+      from: '"tiny machine." <rick@teamtinymachine.com>', // sender address 
       to: makers.email, // list of receivers 
-      subject: 'Thank You For Registration', // Subject line 
+      subject: '🤠 Well howdy there, pardner! ', // Subject line 
       html: data // html body
     };
 
