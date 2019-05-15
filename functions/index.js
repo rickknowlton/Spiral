@@ -104,7 +104,6 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
 });
 
 
-// JSON.stringify(snap.val())
 // Mailer
 
 
@@ -130,7 +129,7 @@ exports.mailFxn = functions.database
     return null;
   });
 
-function sendEmail(makers, makerID) {
+function sendEmail(makers) {
 
   //http://www.google.com/accounts/DisplayUnlockCaptcha
   //https://myaccount.google.com/lesssecureapps
@@ -178,77 +177,3 @@ function sendEmail(makers, makerID) {
 // v 1.2.2
 // Slack is delivering text payload only - when I put snap.val() under body>text> it comes in as blank array
 // I tested with request bin and got the full JSON object, so that data is coming thru fine.
-
-
-// Mailer
-
-
-exports.mailer = functions.database
-  .ref("/hooks/{hookId}")
-  .onCreate((snapshot, context) => {
-    // Grab the current value of what was written to the Realtime Database.
-    const contact = snapshot.val();
-    console.log(contact.name);
-    console.log(contact.email);
-
-    const contactID = context.params.id;
-
-
-
-    //firebase functions:config:set gmail.email=myemailID@gmail.com gmail.password=Mypassword
-    //To set email and password
-
-    //To view the set email and pass firebase functions:config:get
-
-    sendEmail(contact, contactID);
-
-    return null;
-  });
-
-function sendEmail(contact, contactID) {
-
-  //http://www.google.com/accounts/DisplayUnlockCaptcha
-  //https://myaccount.google.com/lesssecureapps
-  //This link is important to enable accesses to google account
-
-  var UNIQUE_NAME = contact.name;
-  // var UNIQUE_ID = makerID;
-
-  var UNIQUE_QR = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${+contactID + 1000}`
-
-
-  var filePath = path.join(__dirname, 'templates/confirmation.html');
-
-  fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
-    data = data.toString();
-    data = data.replace(/##UNIQUE_NAME/g, UNIQUE_NAME);
-
-
-    var mailOptions = {
-      from: '"tiny machine." <rick@teamtinymachine.com>', // sender address 
-      to: 'richard.d.knowlton@gmail.com', // list of receivers 
-      subject: '🤠 Well howdy there, pardner! ', // Subject line 
-      html: data // html body
-    };
-
-
-
-    try {
-      mailTransport.sendMail(mailOptions);
-    } catch (error) {
-      console.error('There was an error while sending the email:', error);
-
-      // errorEmails = functions.database.ref(`/emailError/${makerID}`).set({
-      //   email: makers.email
-      // })
-
-    }
-
-
-    return console.log(
-      `Sending mail to ${makers.name} with stamp ${makers.stamp}`
-    );
-  });
-}
-
-//To deploy firebase deploy --only functions:mailFxn
