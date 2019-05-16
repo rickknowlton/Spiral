@@ -9,3 +9,5 @@ v 2.0.11
 -- Slack Alert for Github Commits ✅
 
 -- Contact Form Submission to Company Email ❌
+
+-- Configure private email to use as sender
