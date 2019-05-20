@@ -11,4 +11,3 @@ v 2.0.11
 -- Contact Form Submission to Company Email ❌
 
 -- Configure private email to use as sender
-
