@@ -103,10 +103,13 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
   console.log('SUCCESS! Posted', snap.ref);
 });
 
-
+const test = await rp({
+  console.log();
+});
 // Outbound Mailer
 
 
+//
 // exports.mailFxn = functions.database
 //   .ref("/hooks/{hookId}")
 //   .onCreate((snapshot, context) => {
