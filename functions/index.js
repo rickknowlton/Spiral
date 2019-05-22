@@ -107,15 +107,81 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
 // Mailer
 
 
-exports.mailFxn = functions.database
+// exports.mailFxn = functions.database
+//   .ref("/hooks/{hookId}")
+//   .onCreate((snapshot, context) => {
+//     // Grab the current value of what was written to the Realtime Database.
+//     const makers = snapshot.val();
+//     console.log(makers.name);
+//     console.log(makers.email);
+
+//     const makerID = context.params.id;
+
+
+
+//     //firebase functions:config:set gmail.email=myemailID@gmail.com gmail.password=Mypassword
+//     //To set email and password
+
+//     //To view the set email and pass firebase functions:config:get
+
+//     sendEmail(makers, makerID);
+
+//     return null;
+//   });
+
+// function sendEmail(makers) {
+
+//   //http://www.google.com/accounts/DisplayUnlockCaptcha
+//   //https://myaccount.google.com/lesssecureapps
+//   //This link is important to enable accesses to google account
+
+//   var UNIQUE_NAME = makers.name;
+//   // var UNIQUE_ID = makerID;
+
+//   var filePath = path.join(__dirname, 'templates/confirmation.html');
+
+//   fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
+//     data = data.toString();
+//     data = data.replace(/##UNIQUE_NAME/g, UNIQUE_NAME);
+
+
+//     var mailOptions = {
+//       from: '"tiny machine." <rick@teamtinymachine.com>', // sender address 
+//       to: makers.email, // list of receivers 
+//       subject: '🤠 Well howdy there, pardner! ', // Subject line 
+//       html: data // html body
+//     };
+
+
+
+//     try {
+//       mailTransport.sendMail(mailOptions);
+//     } catch (error) {
+//       console.error('There was an error while sending the email:', error);
+
+//       // errorEmails = functions.database.ref(`/emailError/${makerID}`).set({
+//       //   email: makers.email
+//       // })
+
+//     }
+
+
+//     return console.log(
+//       `Sending mail to ${makers.name} with stamp ${makers.stamp}`
+//     );
+//   });
+// }
+
+// Inbound Mailer
+exports.inbound = functions.database
   .ref("/hooks/{hookId}")
   .onCreate((snapshot, context) => {
     // Grab the current value of what was written to the Realtime Database.
-    const makers = snapshot.val();
-    console.log(makers.name);
-    console.log(makers.email);
+    const contact = snapshot.val();
+    console.log(contact.name);
+    console.log(contact.email);
 
-    const makerID = context.params.id;
+    const contactID = context.params.id;
 
 
 
@@ -124,31 +190,38 @@ exports.mailFxn = functions.database
 
     //To view the set email and pass firebase functions:config:get
 
-    sendEmail(makers, makerID);
+    sendEmail(contact, contactID);
 
     return null;
   });
 
-function sendEmail(makers) {
+function sendEmail(contact) {
 
   //http://www.google.com/accounts/DisplayUnlockCaptcha
   //https://myaccount.google.com/lesssecureapps
   //This link is important to enable accesses to google account
 
-  var UNIQUE_NAME = makers.name;
+  var UNIQUE_NAME = contact.name;
+  var UNIQUE_EMAIL = contact.email;
+
   // var UNIQUE_ID = makerID;
 
-  var filePath = path.join(__dirname, 'templates/confirmation.html');
+  var filePath = path.join(__dirname, 'templates/submission.html');
 
   fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
     data = data.toString();
     data = data.replace(/##UNIQUE_NAME/g, UNIQUE_NAME);
+    data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_EMAIL);
+    data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_PHONE);
+    data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_COMPANY);
+    data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_MESSAGE);
 
 
     var mailOptions = {
-      from: '"tiny machine." <rick@teamtinymachine.com>', // sender address 
-      to: makers.email, // list of receivers 
-      subject: '🤠 Well howdy there, pardner! ', // Subject line 
+      to: '"tiny machine." <rick@teamtinymachine.com>', // list of receivers 
+      from: contact.email, // sender address 
+      sender: contact.name + ' <' + contact.email + '>',
+      subject: '🚀 Incoming Form Submission from ' + contact.name + '!', // Subject line 
       html: data // html body
     };
 
@@ -167,7 +240,7 @@ function sendEmail(makers) {
 
 
     return console.log(
-      `Sending mail to ${makers.name} with stamp ${makers.stamp}`
+      `Sending mail to ${contact.name} with stamp ${contact.stamp}`
     );
   });
 }
