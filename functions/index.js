@@ -203,6 +203,9 @@ function sendEmail(contact) {
 
   var UNIQUE_NAME = contact.name;
   var UNIQUE_EMAIL = contact.email;
+  var UNIQUE_PHONE = contact.phone;
+  var UNIQUE_COMPANY = contact.company;
+  var UNIQUE_MESSAGE = contact.message;
 
   // var UNIQUE_ID = makerID;
 
@@ -212,15 +215,14 @@ function sendEmail(contact) {
     data = data.toString();
     data = data.replace(/##UNIQUE_NAME/g, UNIQUE_NAME);
     data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_EMAIL);
-    data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_PHONE);
-    data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_COMPANY);
-    data = data.replace(/##UNIQUE_EMAIL/g, UNIQUE_MESSAGE);
+    data = data.replace(/##UNIQUE_PHONE/g, UNIQUE_PHONE);
+    data = data.replace(/##UNIQUE_COMPANY/g, UNIQUE_COMPANY);
+    data = data.replace(/##UNIQUE_MESSAGE/g, UNIQUE_MESSAGE);
 
 
     var mailOptions = {
-      to: '"tiny machine." <rick@teamtinymachine.com>', // list of receivers 
-      from: contact.email, // sender address 
-      sender: contact.name + ' <' + contact.email + '>',
+      to: '"tiny machine." <richard.d.knowlton@gmail.com>', // list of receivers 
+      from: '"tiny machine." <rick@teamtinymachine.com>', // sender address 
       subject: '🚀 Incoming Form Submission from ' + contact.name + '!', // Subject line 
       html: data // html body
     };
