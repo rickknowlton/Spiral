@@ -104,8 +104,8 @@ exports.webhook = functions.database.ref('/hooks/{hookId}').onCreate(async (snap
 });
 
 
-// Outbound Mailer
 
+// Outbound Mailer
 
 //Add Outbound Email Config/Templating
 
