@@ -28,7 +28,7 @@ To use Spiral we will create both an inbound (company) and outbound (client) Fir
 
 - Custom Email Confirmation ✅
 
-- Configure private email to use as sender ❌
+- Configure private email to use as sender ✅
 
 - Text Message Confirmation/Greeting ❌
 
