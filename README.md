@@ -21,7 +21,7 @@ To use Spiral we will create both an inbound (company) and outbound (client) Fir
 
 - reCaptcha Authentication ❌
 
-- Configure private email to use as sender ❌
+- Configure private email to use as sender ✅
 
 
 ## Spiral Outbound Features

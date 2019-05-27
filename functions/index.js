@@ -9,14 +9,25 @@ const nodemailer = require('nodemailer');
 const cors = require('cors')({ origin: true });
 const fs = require("fs");
 const path = require('path');
+const emailUsername = functions.config().email.username;
+const emailPassword = functions.config().email.password;
+const emailHost = functions.config().email.host;
 const gmailEmail = functions.config().gmail.email;
 const gmailPassword = functions.config().gmail.password;
 const mailTransport = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: gmailEmail,
-        pass: gmailPassword
-    }
+  host: emailHost,
+  port: 465,
+  secure: true,
+  auth: {
+  user: emailUsername,
+  pass: emailPassword
+  }  
+  
+  // service: 'gmail',
+    // auth: {
+    //     user: gmailEmail,
+    //     pass: gmailPassword
+    // }
 });
 
 
@@ -224,7 +235,7 @@ function sendEmail(contact) {
 
     var mailOptions = {
       to: '"tiny machine." <richard.d.knowlton@gmail.com>', // list of receivers 
-      from: '"tiny machine." <rick@teamtinymachine.com>', // sender address 
+      from: '"tiny machine." <hello@teamtinymachine.com>', // sender address 
       subject: '🚀 Incoming Form Submission from ' + contact.name + '!', // Subject line 
       html: data // html body
     };
@@ -254,3 +265,8 @@ function sendEmail(contact) {
 // v 1.2.2
 // Slack is delivering text payload only - when I put snap.val() under body>text> it comes in as blank array
 // I tested with request bin and got the full JSON object, so that data is coming thru fine.
+
+
+// firebase functions:config:set email.host=premium56.web-hosting.com
+
+
