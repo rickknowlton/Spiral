@@ -35,5 +35,3 @@ To use Spiral we will create both an inbound (company) and outbound (client) Fir
 - Slack Alert for Registration Submission ❌
 
 - User Authentication ❌
-
-
