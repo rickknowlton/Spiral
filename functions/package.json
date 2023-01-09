@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "firebase-admin": "~7.1.1",
-    "firebase-functions": "^2.2.1",
+    "firebase-admin": "~11.4.1",
+    "firebase-functions": "^4.1.1",
     "fs": "0.0.1-security",
     "nodemailer": "^6.1.1",
     "path": "^0.12.7",
